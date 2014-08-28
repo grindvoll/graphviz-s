@@ -1,3 +1,5 @@
+This repo is forked from drdozer/graphviz-s. It's just an adaptation to get it to work with Scala 2.11.
+
 GRAPHVIZ bindings from scala.
 
 This comprises of: an API and data model for the DOT file format; invocation of the commandline tooling.
