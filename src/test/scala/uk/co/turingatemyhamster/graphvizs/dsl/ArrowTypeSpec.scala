@@ -23,15 +23,15 @@ class ArrowTypeSpec extends Specification with ParserMatchers {
     }
 
     "O gives o" in {
-      (O : Modifiers).name must_== "o"
+      (O: Modifiers).name must_== "o"
     }
 
     "L gives l" in {
-      (L : Modifiers).name must_== "l"
+      (L: Modifiers).name must_== "l"
     }
 
     "R gives r" in {
-      (R : Modifiers).name must_== "r"
+      (R: Modifiers).name must_== "r"
     }
 
     "OL gives ol" in {
@@ -41,7 +41,7 @@ class ArrowTypeSpec extends Specification with ParserMatchers {
 
   "arrow name data structures" should {
     "render Box to box" in {
-      (Shape.Box : ArrowName).name must_== "box"
+      (Shape.Box: ArrowName).name must_== "box"
     }
 
     "render O:R:Tee to ortee" in {

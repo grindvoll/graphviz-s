@@ -14,41 +14,41 @@ class DotAstRendererSpec extends Specification {
   "identifier renderer" should {
 
     "render letter-only identifiers" in new renderer {
-      renderWith(render_id, "abcd" : ID) must_== "abcd"
+      renderWith(render_id, "abcd": ID) must_== "abcd"
     }
 
     "render alphanumerics starting with a letter" in new renderer {
-      renderWith(render_id, "ab786876" : ID) must_== "ab786876"
+      renderWith(render_id, "ab786876": ID) must_== "ab786876"
     }
 
     "render numeric negative double" in new renderer {
-      renderWith(render_id, -1234.3453 : ID) must_== "-1234.3453"
+      renderWith(render_id, -1234.3453: ID) must_== "-1234.3453"
     }
 
     "render numeric for 1" in new renderer {
-      renderWith(render_id, 1 : ID) must_== "1.0"
+      renderWith(render_id, 1: ID) must_== "1.0"
     }
   }
 
   "attribute renderer" should {
 
     "render attribute with name only" in new renderer {
-      renderWith(render_attributeAssignment, "a" : AttributeAssignment) must_== "a"
+      renderWith(render_attributeAssignment, "a": AttributeAssignment) must_== "a"
     }
 
     "render attribute with name and identifier value" in new renderer {
-      renderWith(render_attributeAssignment, "a" -> "b" : AttributeAssignment) must_== "a = b"
+      renderWith(render_attributeAssignment, "a" -> "b": AttributeAssignment) must_== "a = b"
     }
 
     "render attribute with name and numeric value" in new renderer {
-      renderWith(render_attributeAssignment, "a" -> 1 : AttributeAssignment) must_== "a = 1.0"
+      renderWith(render_attributeAssignment, "a" -> 1: AttributeAssignment) must_== "a = 1.0"
     }
   }
 
   "statement renderer" should {
 
     "render node with no attributes" in new renderer {
-      renderWith(render_statement, "n1" : Statement) must_== "n1"
+      renderWith(render_statement, "n1": Statement) must_== "n1"
     }
 
     "render node with one numeric attribute" in new renderer {
@@ -86,11 +86,11 @@ class DotAstRendererSpec extends Specification {
     }
 
     "render one assignment statement" in new renderer {
-      renderWith(render_statementList, Seq(AssignmentStatement("a", "b") : Statement)) must_== "a = b\n"
+      renderWith(render_statementList, Seq(AssignmentStatement("a", "b"): Statement)) must_== "a = b\n"
     }
 
     "render two assignment statements" in new renderer {
-      renderWith(render_statementList, Seq(AssignmentStatement("a", "b") : Statement, AssignmentStatement("c", "d"))) must_== "a = b\nc = d\n"
+      renderWith(render_statementList, Seq(AssignmentStatement("a", "b"): Statement, AssignmentStatement("c", "d"))) must_== "a = b\nc = d\n"
     }
   }
 
@@ -139,14 +139,13 @@ class DotAstRendererSpec extends Specification {
 
   }
 
-
   trait renderer extends Scope {
     val out = new java.lang.StringBuilder
     val renderer = new DotAstRenderer(out)
 
     def output = out.toString
-    
-    protected def renderWith[T](rt: T => Unit, t: T):String = {
+
+    protected def renderWith[T](rt: T => Unit, t: T): String = {
       rt(t)
       output
     }

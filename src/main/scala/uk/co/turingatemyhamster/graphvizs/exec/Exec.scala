@@ -6,7 +6,7 @@ import sys.process.ProcessIO
 import uk.co.turingatemyhamster.graphvizs.dsl.Graph
 import java.io._
 import annotation.implicitNotFound
-import xml.{Elem, XML}
+import xml.{ Elem, XML }
 import javax.xml.parsers.SAXParserFactory
 
 /**
@@ -18,7 +18,7 @@ import javax.xml.parsers.SAXParserFactory
  * @author Matthew Pocock
  */
 
-trait Exec extends GraphHandlers with XmlHandlers with StringHandlers with FileHandlers {
+trait MExec extends GraphHandlers with XmlHandlers with StringHandlers with FileHandlers {
 
   /**
    * Location of the dot binary.
@@ -37,21 +37,20 @@ trait Exec extends GraphHandlers with XmlHandlers with StringHandlers with FileH
    * @tparam To         the output type
    * @return            a `To` representing the output of dot
    */
-  def dot2dot[From, To](from: From, format: DotFormat = DotFormat.dot)
-                                       (implicit inputFrom: InputHandler[From], outputTo: OutputHandler[To]): To =
-  {
-    val app = DotApp(dotBinary, outputTo.processOpts(DotOpts(Some(DotLayout.dot), Some(format))))
+  def dot2dot[From, To](from: From, format: DotFormat = DotFormat.dot, layout: DotLayout = DotLayout.dot)(implicit inputFrom: InputHandler[From], outputTo: OutputHandler[To]): To =
+    {
+      val app = DotApp(dotBinary, outputTo.processOpts(DotOpts(Some(layout), Some(format))))
 
-    val errHandler = stringOutputHandler
+      val errHandler = stringOutputHandler
 
-    val io = new ProcessIO(inputFrom.handle(from), outputTo.handle, errHandler.handle, false)
+      val io = new ProcessIO(inputFrom.handle(from), outputTo.handle, errHandler.handle, false)
 
-    val proc = app.process run io
-    proc.exitValue() match {
-      case 0 => outputTo.value
-      case x => sys.error("Dot exited with error code: " + x + " with output:\n" + errHandler.value)
+      val proc = app.process run io
+      proc.exitValue() match {
+        case 0 => outputTo.value
+        case x => sys.error("Dot exited with error code: " + x + " with output:\n" + errHandler.value)
+      }
     }
-  }
 }
 
 @implicitNotFound("Unable to find input handler for ${A}")
@@ -84,11 +83,11 @@ trait StringHandlers {
       out.close()
     }
   }
-  
+
 }
 
 trait GraphHandlers {
-  
+
   implicit object GraphInputHandler extends InputHandler[Graph] {
     def handle(g: Graph)(os: OutputStream) {
       val pw = new PrintWriter(os)
@@ -105,7 +104,7 @@ trait GraphHandlers {
       out.close()
     }
   }
-  
+
 }
 
 trait XmlHandlers {

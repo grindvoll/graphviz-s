@@ -26,7 +26,7 @@ trait DotRenderer extends DotDestructors {
   def render_graph(g: T_Graph) {
     val (strict, graphType, id, statements) = decompose_graph(g)
 
-    if(strict) {
+    if (strict) {
       out append "strict "
     }
     render_graphType(graphType)
@@ -36,9 +36,9 @@ trait DotRenderer extends DotDestructors {
       space
     })
     out append "{"
-    if(! statements.isEmpty) {
+    if (!statements.isEmpty) {
       nl
-      for(s <- statements) {
+      for (s <- statements) {
         render_statement(s)
         nl
       }
@@ -51,21 +51,20 @@ trait DotRenderer extends DotDestructors {
     val (attrs1, attrs2) = decompose_attributeList(al)
 
     out append " ["
-    for(as <- attrs1) {
-      for(a <- as) {
+    for (as <- attrs1) {
+      for (a <- as) {
         space
         render_attributeAssignment(a)
       }
     }
     out append " ]"
-    for(as <- attrs2) {
+    for (as <- attrs2) {
       space
-      for(a <- as) {
+      for (a <- as) {
         space
         render_attributeAssignment(a)
       }
     }
-
 
   }
 
@@ -73,7 +72,7 @@ trait DotRenderer extends DotDestructors {
     val (node, attributes) = decompose_nodeStatement(ns)
 
     render_nodeId(node)
-    for(as <- attributes) {
+    for (as <- attributes) {
       render_attributeList(as)
     }
   }
@@ -82,13 +81,13 @@ trait DotRenderer extends DotDestructors {
     val (node, nodes, attributes) = decompose_edgeStatement(es)
 
     render_node(node)
-    for((op, n) <- nodes) {
+    for ((op, n) <- nodes) {
       space
       render_edgeOp(op)
       space
       render_node(n)
     }
-    for(as <- attributes) {
+    for (as <- attributes) {
       render_attributeList(as)
     }
   }
@@ -99,10 +98,10 @@ trait DotRenderer extends DotDestructors {
     render_statementType(statementType)
     render_attributeList(attributes)
   }
-  
+
   def render_assignmentStatement(as: T_AssignmentStatement) {
     val (name, value) = decompose_assignmentStatement(as)
-    
+
     render_id(name)
     out append " = "
     render_id(value)
@@ -112,7 +111,7 @@ trait DotRenderer extends DotDestructors {
     val (id, port) = decompose_nodeId(nid)
 
     render_id(id)
-    for(p <- port) {
+    for (p <- port) {
       space
       render_port(p)
     }
@@ -120,13 +119,13 @@ trait DotRenderer extends DotDestructors {
 
   def render_port(p: T_Port) {
     val (id, compass_pt) = decompose_port(p)
-    
+
     out append " : "
-    for(i <- id) {
+    for (i <- id) {
       render_id(i)
       out append " : "
     }
-    for(cp <- compass_pt) {
+    for (cp <- compass_pt) {
       render_compass_pt(cp)
     }
 
@@ -136,7 +135,7 @@ trait DotRenderer extends DotDestructors {
     val (name, value) = decompose_attributeAssignment(as)
 
     render_id(name)
-    for(v <- value) {
+    for (v <- value) {
       out append " = "
       render_id(v)
     }
@@ -153,13 +152,13 @@ trait DotRenderer extends DotDestructors {
     val (id, statements) = decompose_subgraph(sg)
 
     out append "subgraph"
-    for(i <- id) {
+    for (i <- id) {
       space
       render_id(i)
     }
     space
     out append "{"
-    if(! statements.isEmpty) {
+    if (!statements.isEmpty) {
       nl
       render_statementList(statements)
     }

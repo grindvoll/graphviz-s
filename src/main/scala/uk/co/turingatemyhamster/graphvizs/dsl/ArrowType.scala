@@ -1,6 +1,7 @@
 package uk.co.turingatemyhamster.graphvizs.dsl
 
 import util.parsing.combinator.RegexParsers
+import scala.language.implicitConversions
 
 /**
  * Arrow types.
@@ -128,7 +129,6 @@ case object L extends LR { def name = "l" }
  */
 case object R extends LR { def name = "r" }
 
-
 /**
  * An arrowhead shape.
  *
@@ -144,17 +144,16 @@ sealed trait Shape {
  * @author Matthew Pocock
  */
 object Shape {
-  case object Box     extends Shape { def name = "box" }
-  case object Crow    extends Shape { def name = "crow" }
+  case object Box extends Shape { def name = "box" }
+  case object Crow extends Shape { def name = "crow" }
   case object Diamond extends Shape { def name = "diamond" }
-  case object Dot     extends Shape { def name = "dot" }
-  case object Inv     extends Shape { def name = "inv" }
-  case object None    extends Shape { def name = "none" }
-  case object Normal  extends Shape { def name = "normal" }
-  case object Tee     extends Shape { def name = "tee" }
-  case object Vee     extends Shape { def name = "vee" }
+  case object Dot extends Shape { def name = "dot" }
+  case object Inv extends Shape { def name = "inv" }
+  case object None extends Shape { def name = "none" }
+  case object Normal extends Shape { def name = "normal" }
+  case object Tee extends Shape { def name = "tee" }
+  case object Vee extends Shape { def name = "vee" }
 }
-
 
 /**
  * Parser from DOT arrow type strings to the arrow data model.
@@ -162,25 +161,24 @@ object Shape {
  * @author Matthew Pocock
  */
 object ArrowTypeParsers extends RegexParsers {
-  
-  val shape: Parser[Shape]
-  = ("box"      ^^^ Shape.Box) |
-    ("crow"     ^^^ Shape.Crow) |
-    ("diamond"  ^^^ Shape.Diamond) |
-    ("dot"      ^^^ Shape.Dot) |
-    ("inv"      ^^^ Shape.Inv) |
-    ("none"     ^^^ Shape.None) |
-    ("normal"   ^^^ Shape.Normal) |
-    ("tee"      ^^^ Shape.Tee) |
-    ("vee"      ^^^ Shape.Vee)
-  
+
+  val shape: Parser[Shape] = ("box" ^^^ Shape.Box) |
+    ("crow" ^^^ Shape.Crow) |
+    ("diamond" ^^^ Shape.Diamond) |
+    ("dot" ^^^ Shape.Dot) |
+    ("inv" ^^^ Shape.Inv) |
+    ("none" ^^^ Shape.None) |
+    ("normal" ^^^ Shape.Normal) |
+    ("tee" ^^^ Shape.Tee) |
+    ("vee" ^^^ Shape.Vee)
+
   val lr: Parser[LR] = ("l" ^^^ L) | ("r" ^^^ R)
 
   val o: Parser[O.type] = "o" ^^^ O
 
-  val modifiers: Parser[Modifiers] = o.? ~ lr.? ^^ { case o~lr => Modifiers(o, lr) }
+  val modifiers: Parser[Modifiers] = o.? ~ lr.? ^^ { case o ~ lr => Modifiers(o, lr) }
 
-  val arrowName: Parser[ArrowName] = modifiers ~ shape ^^ { case m~s => ArrowName(m, s) }
+  val arrowName: Parser[ArrowName] = modifiers ~ shape ^^ { case m ~ s => ArrowName(m, s) }
 
   val arrowType: Parser[ArrowType] = arrowName.* ^^ ArrowType
 }

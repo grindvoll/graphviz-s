@@ -1,8 +1,7 @@
 package uk.co.turingatemyhamster.graphvizs.exec
 
-import java.io.{File}
+import java.io.{ File }
 import sys.process.Process
-
 
 /**
  * The DOT application, and location of the binary.
@@ -42,8 +41,8 @@ object DotLayout {
   val neato = DotLayout("neato")
   val twopi = DotLayout("twopi")
   val circo = DotLayout("circo")
-  val fdp   = DotLayout("fdp")
-  val sfdp  = DotLayout("sfdp")
+  val fdp = DotLayout("fdp")
+  val sfdp = DotLayout("sfdp")
 }
 
 /**
@@ -56,17 +55,17 @@ case class DotFormat(format: List[String]) {
 }
 
 object DotFormat {
-  object dot    extends DotFormat("dot")
-  object ps     extends DotFormat("ps")
-  object svg    extends DotFormat("svg")
-  object svgz   extends DotFormat("svgz")
-  object fig    extends DotFormat("fig")
-  object mif    extends DotFormat("mif")
-  object hpgl   extends DotFormat("hpgl")
-  object pcl    extends DotFormat("pcl")
-  object png    extends DotFormat("png")
-  object gif    extends DotFormat("gif")
-  object cmapx  extends DotFormat("cmapx")
+  object dot extends DotFormat("dot")
+  object ps extends DotFormat("ps")
+  object svg extends DotFormat("svg")
+  object svgz extends DotFormat("svgz")
+  object fig extends DotFormat("fig")
+  object mif extends DotFormat("mif")
+  object hpgl extends DotFormat("hpgl")
+  object pcl extends DotFormat("pcl")
+  object png extends DotFormat("png")
+  object gif extends DotFormat("gif")
+  object cmapx extends DotFormat("cmapx")
 
 }
 

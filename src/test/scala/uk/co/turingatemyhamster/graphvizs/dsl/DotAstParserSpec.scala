@@ -4,6 +4,7 @@ import org.specs2.mutable._
 import org.specs2.matcher.ParserMatchers
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
+import org.specs2.matcher.ExpectedParsedResult._
 
 @RunWith(classOf[JUnitRunner])
 class DotAstParserSpec extends Specification with ParserMatchers {
@@ -21,36 +22,35 @@ class DotAstParserSpec extends Specification with ParserMatchers {
     subgraphSpec ^
     graphSpec
 
-
   lazy val astSpec = new Specification {
     "implicit ast conversions" should {
 
       "promote string to ID" in {
-        ("a" : ID) must_== ID.Identifier("a")
-      }
-      
-      "promote double to ID" should {
-        (1.0 : ID) must_== ID.Numeral(1.0)
+        ("a": ID) must_== ID.Identifier("a")
       }
 
-      "prmote int to ID" should {
-        (1 : ID) must_== ID.Numeral(1.0)
+      "promote double to ID should" >> {
+        (1.0: ID) must_== ID.Numeral(1.0)
+      }
+
+      "prmote int to ID should" >> {
+        (1: ID) must_== ID.Numeral(1.0)
       }
 
       "promote ID to NodeId" in {
-        (ID.Identifier("a") : NodeId) must_== NodeId(ID.Identifier("a"), None)
+        (ID.Identifier("a"): NodeId) must_== NodeId(ID.Identifier("a"), None)
       }
 
       "prmote string to NodeId" in {
-        ("a" : NodeId) must_== NodeId(ID.Identifier("a"), None)
+        ("a": NodeId) must_== NodeId(ID.Identifier("a"), None)
       }
 
       "promote string to NodeStatement" in {
-        ("n1" : NodeStatement) must_==  NodeStatement("n1", None)
+        ("n1": NodeStatement) must_== NodeStatement("n1", None)
       }
 
       "promote ID to an AttributeAssignment" in {
-        ("a" : AttributeAssignment) must_== AttributeAssignment("a")
+        ("a": AttributeAssignment) must_== AttributeAssignment("a")
       }
 
       "promote ID pair to an AttributeAssignment" in {
@@ -58,7 +58,7 @@ class DotAstParserSpec extends Specification with ParserMatchers {
       }
 
       "promote ID pair to an AttributeStatement" in {
-        (("a" -> "b") : AssignmentStatement) must_== AssignmentStatement("a", "b")
+        (("a" -> "b"): AssignmentStatement) must_== AssignmentStatement("a", "b")
       }
 
     }
@@ -80,11 +80,11 @@ class DotAstParserSpec extends Specification with ParserMatchers {
           AttributeList(Some(Seq(AttributeAssignment("a", "b"), AttributeAssignment("c", "d"))))
       }
 
-      (Seq("a" -> "b", "c" -> "d") : AttributeList) must_==
+      (Seq("a" -> "b", "c" -> "d"): AttributeList) must_==
         AttributeList(Some(Seq(AttributeAssignment("a", "b"), AttributeAssignment("c", "d"))))
 
       "build subgraph from ID only" in {
-        Subgraph("a") must_== Subgraph(Some("a" : ID), Seq())
+        Subgraph("a") must_== Subgraph(Some("a": ID), Seq())
       }
 
       "build subgraph from statements only" in {
@@ -98,19 +98,19 @@ class DotAstParserSpec extends Specification with ParserMatchers {
     "identifier parser" should {
 
       "parse letter-only identifiers" in {
-        id must succeedOn("abcd").withResult(ID.Identifier("abcd") : ID)
+        id must succeedOn("abcd").withResult(ID.Identifier("abcd"): ID)
       }
 
       "parse alphanumerics starting with a letter" in {
-        id must succeedOn("ab786876").withResult(ID.Identifier("ab786876") : ID)
+        id must succeedOn("ab786876").withResult(ID.Identifier("ab786876"): ID)
       }
 
       "parse numeric negative double" in {
-        id must succeedOn("-1234.3453").withResult(ID.Numeral(-1234.3453) : ID)
+        id must succeedOn("-1234.3453").withResult(ID.Numeral(-1234.3453): ID)
       }
 
       "parse numeric for 1" in {
-        id must succeedOn("1").withResult(ID.Numeral(1.0) : ID)
+        id must succeedOn("1").withResult(ID.Numeral(1.0): ID)
       }
 
       "be unable to parse numeric for 1 with the id_identifier parser" in {
@@ -132,7 +132,7 @@ class DotAstParserSpec extends Specification with ParserMatchers {
     "attribute assignment parser" should {
 
       "parse attribute with name only" in {
-       attribute_assignment must succeedOn("a").withResult(AttributeAssignment("a", None))
+        attribute_assignment must succeedOn("a").withResult(AttributeAssignment("a", None))
       }
 
       "parse attribute with name and identifier value" in {
@@ -146,19 +146,18 @@ class DotAstParserSpec extends Specification with ParserMatchers {
     }
   }
 
-
   lazy val statementSpec = new Specification {
     "individual statement parser" should {
 
       "parse a node statement with no attributes" in {
         node_statement must succeedOn("n1").withResult(NodeStatement("n1", None))
       }
-      
+
       "parse a node statement with one numeric attribute" in {
         node_statement must succeedOn("n1 [a = 3]").withResult(
           NodeStatement("n1", AttributeList("a" -> 3)))
       }
-      
+
       "parse a directed edge statement with no attributes" in {
         edge_statement must succeedOn("a -> b -> c").withResult(
           EdgeStatement("a", Seq(EdgeOp.-> -> "b", EdgeOp.-> -> "c"), None))
@@ -184,23 +183,23 @@ class DotAstParserSpec extends Specification with ParserMatchers {
     "statement_list parser" should {
 
       "parse the empty string" in {
-        statement_list must succeedOn("").withResult(Seq[Statement]())
+        statement_list must succeedOn("").withResult(toExpectedParsedResult(Seq[Statement]()))
       }
 
       "parse one node statement" in {
-        statement_list must succeedOn("n1").withResult(Seq(NodeStatement("n1", None) : Statement))
+        statement_list must succeedOn("n1").withResult(toExpectedParsedResult(Seq(NodeStatement("n1", None): Statement)))
       }
 
       "parse one assignment statement" in {
-        statement_list must succeedOn("a = b").withResult(Seq(AssignmentStatement("a", "b") : Statement))
+        statement_list must succeedOn("a = b").withResult(toExpectedParsedResult(Seq(AssignmentStatement("a", "b"): Statement)))
       }
 
       "parse one assignment statement with a trailing semi-colon" in {
-        statement_list must succeedOn("a = b;").withResult(Seq(AssignmentStatement("a", "b") : Statement))
+        statement_list must succeedOn("a = b;").withResult(toExpectedParsedResult(Seq(AssignmentStatement("a", "b"): Statement)))
       }
 
       "parse two assignment statements" in {
-        statement_list must succeedOn("a = b ; c = d").withResult(Seq(AssignmentStatement("a", "b") : Statement, AssignmentStatement("c", "d")))
+        statement_list must succeedOn("a = b ; c = d").withResult(toExpectedParsedResult(Seq(AssignmentStatement("a", "b"): Statement, AssignmentStatement("c", "d"))))
       }
     }
   }
@@ -226,14 +225,13 @@ class DotAstParserSpec extends Specification with ParserMatchers {
     }
   }
 
-
   lazy val graphSpec = new Specification {
     "graph parser" should {
 
       "parse an empty graph" in {
         graph must succeedOn("""graph {}""").withResult(Graph(false, GraphType.Graph, None, Seq()))
       }
-      
+
       "parse an empty digraph" in {
         graph must succeedOn("""digraph {}""").withResult(Graph(false, GraphType.Digraph, None, Seq()))
       }
@@ -256,7 +254,7 @@ class DotAstParserSpec extends Specification with ParserMatchers {
       "parse the cluster example" in {
         graph must succeedOn("""
         digraph G {
-      
+
         	subgraph cluster_0 {
         		style=filled;
         		color=lightgrey;
@@ -264,7 +262,7 @@ class DotAstParserSpec extends Specification with ParserMatchers {
         		a0 -> a1 -> a2 -> a3;
         		label = "process #1";
         	}
-      
+
         	subgraph cluster_1 {
         		node [style=filled];
         		b0 -> b1 -> b2 -> b3;
@@ -278,7 +276,7 @@ class DotAstParserSpec extends Specification with ParserMatchers {
         	a3 -> a0;
         	a3 -> end;
         	b3 -> end;
-      
+
         	start [shape=Mdiamond];
         	end [shape=Msquare];
         }""")

@@ -76,47 +76,33 @@ trait DotAstBuilder extends DotAstConstructors {
 
 class DotAstParser extends DotAstBuilder with DotParser {
 
-  lazy val id: Parser[ID]
-  = id_identifier | id_numeral | id_quoted_string
+  lazy val id: Parser[ID] = id_identifier | id_numeral | id_quoted_string
 
+  lazy val id_identifier: Parser[ID.Identifier] = identifier ^^ { x => ID.Identifier(x) }
 
-  lazy val id_identifier: Parser[ID.Identifier]
-  = identifier ^^ { x => ID.Identifier(x) }
+  lazy val id_numeral: Parser[ID.Numeral] = numeral ^^ { x => ID.Numeral(x.toDouble) }
 
-  lazy val id_numeral: Parser[ID.Numeral]
-  = numeral ^^ { x => ID.Numeral(x.toDouble) }
+  lazy val id_quoted_string: Parser[ID.Quoted] = dblquoted ^^ { x => ID.Quoted(x) }
 
-  lazy val id_quoted_string: Parser[ID.Quoted]
-  = dblquoted ^^ { x => ID.Quoted(x) }
-
-
-
-  lazy val statement_type: Parser[StatementType]
-  = (GRAPH ^^^ StatementType.Graph) |
+  lazy val statement_type: Parser[StatementType] = (GRAPH ^^^ StatementType.Graph) |
     (NODE ^^^ StatementType.Node) |
     (EDGE ^^^ StatementType.Edge)
 
-
-  lazy val graph_type: Parser[GraphType]
-  = (GRAPH ^^^ GraphType.Graph) |
+  lazy val graph_type: Parser[GraphType] = (GRAPH ^^^ GraphType.Graph) |
     (DIGRAPH ^^^ GraphType.Digraph)
 
-
-  lazy val edge_op: Parser[EdgeOp]
-  = (directed_edge ^^^ EdgeOp.->) |
+  lazy val edge_op: Parser[EdgeOp] = (directed_edge ^^^ EdgeOp.->) |
     (undirected_edge ^^^ EdgeOp.--)
 
-
-  lazy val compass_pt: Parser[T_CompassPt]
-  = (n  ^^^ CompassPt.N)  |
+  lazy val compass_pt: Parser[T_CompassPt] = (n ^^^ CompassPt.N) |
     (ne ^^^ CompassPt.NE) |
-    (e  ^^^ CompassPt.E)  |
+    (e ^^^ CompassPt.E) |
     (se ^^^ CompassPt.SE) |
-    (s  ^^^ CompassPt.S)  |
+    (s ^^^ CompassPt.S) |
     (sw ^^^ CompassPt.SW) |
-    (w  ^^^ CompassPt.W)  |
+    (w ^^^ CompassPt.W) |
     (nw ^^^ CompassPt.NW) |
-    (c  ^^^ CompassPt.C)  |
+    (c ^^^ CompassPt.C) |
     (id ^^ (CompassPt.or apply _))
 }
 
@@ -143,7 +129,7 @@ class DotAstDestructors extends DotAst with DotDestructors {
 }
 
 class DotAstRenderer(val out: Appendable) extends DotAstDestructors with DotRenderer {
-  
+
   private final val qt = "\""
 
   def render_graphType(gt: GraphType) = out append (gt match {
@@ -159,16 +145,16 @@ class DotAstRenderer(val out: Appendable) extends DotAstDestructors with DotRend
   })
 
   def render_statement(st: Statement) = st match {
-    case ns : NodeStatement => render_nodeStatement(ns)
-    case es : EdgeStatement => render_edgeStatement(es)
-    case as : AttributeStatement => render_attributeStatement(as)
-    case as : AssignmentStatement => render_assignmentStatement(as)
-    case sg : Subgraph => render_subgraph(sg)
+    case ns: NodeStatement => render_nodeStatement(ns)
+    case es: EdgeStatement => render_edgeStatement(es)
+    case as: AttributeStatement => render_attributeStatement(as)
+    case as: AssignmentStatement => render_assignmentStatement(as)
+    case sg: Subgraph => render_subgraph(sg)
   }
 
   def render_node(n: Node) = n match {
-    case nid : NodeId => render_nodeId(nid)
-    case sg : Subgraph => render_subgraph(sg)
+    case nid: NodeId => render_nodeId(nid)
+    case sg: Subgraph => render_subgraph(sg)
   }
 
   def render_edgeOp(eo: EdgeOp) = out append (eo match {
